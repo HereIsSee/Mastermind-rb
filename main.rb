@@ -2,5 +2,5 @@ require_relative 'lib/mastermind.rb'
 
 game = MasterMind.new
 
-puts game.anwser_array
+print game.anwser_array; puts
 game.play
