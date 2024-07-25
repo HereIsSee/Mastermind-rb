@@ -15,6 +15,30 @@ class MasterMind
     @guess_count = 12
   end
 
+  def play
+    puts "Guesser, pick 4 colors from this list (can be repeated), with a number from 1 to 6"
+    print COLORS; puts
+    colors_picked = pick_4_colors()
+    print colors_picked; puts
+    puts guess_feedback(colors_picked)
+
+  end
+
+  def pick_4_colors
+    Array.new(4).map do |value|
+      loop do
+        pick = gets.chomp.to_i
+        if [1,2,3,4,5,6].include? pick
+          value = COLORS[pick-1]
+          break
+        else
+          puts "Wrong input, pick the color again!"
+        end
+      end
+      value
+    end
+  end
+
   def computer_select
     Array.new(4).map { COLORS[rand(0..5)] }
   end
@@ -25,6 +49,11 @@ class MasterMind
     white_pegs-= black_pegs
     { number_of_black_pegs: black_pegs, number_of_white_pegs: white_pegs}
   end
+
+
+
+
+  private
 
   def number_of_white_pegs guess_array
     num = 0
