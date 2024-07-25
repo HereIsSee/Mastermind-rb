@@ -1,21 +1,53 @@
-
 #The Mastermind game class where everything is kept
 class MasterMind
-  
   COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple']
   PEG_COLORS = ['white', 'black']
 
   attr_accessor :anwser_array
 
   def initialize ()
-    @anwser_array = computer_select
+    @anwser_array
     @guess_count = 12
   end
 
   def play
+    puts "Play as 'guesser'(1) or 'secret code creator'(2)"
+    loop do
+      anwser = gets.chomp.to_i
+      if ![1, 2].include?(anwser)
+        puts "Invalid anwser! Try again!"
+      else
+        play_player_guesser() if anwser == 1
+        play_player_secret_code_creator() if anwser == 2
+        break
+      end
+    end
+  end
+
+  def play_player_secret_code_creator
+    puts "Select 4 colors (can be repeated) that will be the code, with the numbers from 1 to 6"
+    print COLORS; puts
+    @anwser_array = pick_4_colors()
+    
+    robot_array = Array.new(4).map { COLORS[rand(0..5)] }
+    (@guess_count-1).downto(1) do |number_of_guesses_left|
+      puts "Number of guesses left: #{number_of_guesses_left}"
+      computer_guess_update(robot_array)
+      feedback = guess_feedback(robot_array)
+      puts "Black pegs: #{feedback[:number_of_black_pegs]}  White pegs: #{feedback[:number_of_white_pegs]}"
+      if win?( feedback ) 
+        return puts "You have guessed right! You WIN!"
+      end
+    end
+    puts "You have run out of guesses! You LOSE!"
+
+  end
+
+  def play_player_guesser
+    @anwser_array = computer_select()
     @guess_count.downto(1) do |number_of_guesses_left|
       puts "Number of guesses left: #{number_of_guesses_left}"
-      puts "Guesser, pick 4 colors from this list (can be repeated), with a number from 1 to 6"
+      puts "Guesser, pick 4 colors from this list (can be repeated), with the numbers from 1 to 6"
       print COLORS; puts
       feedback = guess_feedback(pick_4_colors())
       puts "Black pegs: #{feedback[:number_of_black_pegs]}  White pegs: #{feedback[:number_of_white_pegs]}"
@@ -24,6 +56,39 @@ class MasterMind
       end  
     end
     puts "You have run out of guesses! You LOSE!"
+  end
+
+  def computer_guess_update array_of_colors
+    array_of_colors.each_with_index do |value, index|
+      if @anwser_array.include?(value) && array_of_colors[index] != @anwser_array[index]
+        change_correct_color_position(array_of_colors, index) 
+      elsif
+        change_color_at_index(array_of_colors, index)
+      end
+    end
+  end
+  
+  def change_color_at_index array_of_colors, index
+    loop do
+      value = COLORS[rand(0..5)]
+      if value != array_of_colors[index]
+        array_of_colors[index] = value
+        break
+      end
+    end
+  end
+
+  def change_correct_color_position array_of_colors, index
+    loop do
+      num = rand(0..3)
+      if array_of_colors[num] != @anwser_array[num] && num != index
+        color = array_of_colors[index]
+        array_of_colors[index] = array_of_colors[num]
+        array_of_colors[num] = color
+        break
+      end
+    end
+    array_of_colors
   end
 
   def pick_4_colors
