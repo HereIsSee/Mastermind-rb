@@ -59,10 +59,11 @@ class MasterMind
   end
 
   def computer_guess_update array_of_colors
+
     array_of_colors.each_with_index do |value, index|
-      if @anwser_array.include?(value) && array_of_colors[index] != @anwser_array[index]
+      if @anwser_array.include?(value) && array_of_colors[index] != @anwser_array[index] && guess_feedback(array_of_colors)[:number_of_black_pegs] != 3
         change_correct_color_position(array_of_colors, index) 
-      elsif
+      elsif array_of_colors[index] != @anwser_array[index]
         change_color_at_index(array_of_colors, index)
       end
     end
