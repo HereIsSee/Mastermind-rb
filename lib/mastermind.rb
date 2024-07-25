@@ -45,7 +45,7 @@ class MasterMind
 
   def guess_feedback guess_array
     black_pegs = number_of_black_pegs(guess_array)
-    white_pegs = number_of_white_pegs(guess_array)
+    white_pegs = p number_of_white_pegs(guess_array)
     white_pegs-= black_pegs
     { number_of_black_pegs: black_pegs, number_of_white_pegs: white_pegs}
   end
@@ -57,10 +57,12 @@ class MasterMind
 
   def number_of_white_pegs guess_array
     num = 0
+    accounted_for_indexes = Array.new
     guess_array.each do |guess|
-      @anwser_array.each do |anwser|
-        if guess == anwser
+      @anwser_array.each_with_index do |anwser, index|
+        if guess == anwser && !accounted_for_indexes.include?(index)
           num+=1 
+          accounted_for_indexes.push index
           break
         end
       end
